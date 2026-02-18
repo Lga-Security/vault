@@ -19,6 +19,13 @@ return new class extends Migration
             $table->string('password');
             $table->rememberToken();
             $table->timestamps();
+            $table->integer('failed_login_attempts')->default(0);
+            $table->timestamp('locked_until')->nullable();
+            $table->string('master_password_hash')->nullable();
+            $table->timestamp('master_password_last_set_at')->nullable();
+            $table->boolean('two_factor_enabled')->default(false);
+            $table->string('two_factor_secret')->nullable();
+            $table->text('two_factor_recovery_codes')->nullable();
         });
 
         Schema::create('password_reset_tokens', function (Blueprint $table) {
