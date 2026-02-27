@@ -21,6 +21,11 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'failed_login_attempts',
+        'master_password_hash',
+        'two_factor_enabled',
+        'two_factor_secret',
+        'two_factor_recovery_codes'
     ];
 
     /**
@@ -31,6 +36,8 @@ class User extends Authenticatable
     protected $hidden = [
         'password',
         'remember_token',
+        'master_password_hash',
+        'two_factor_secret',
     ];
 
     /**
@@ -45,4 +52,28 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+    public function Vaults(): HasMany
+    {
+        return $this->HasMany(Vaults::class);
+        }
+    
+    public function Category(): HasMany
+    {
+        return $this->HasMany(Category::class);
+        }
+
+    public function sharedPasswords(): HasMany
+    {
+        return $this->HasMany(sharedPasswords::class);
+        }
+        
+    public function receivedPasswords(): HasMany
+    {
+        return $this->HaMany(receivedPasswords::class);
+        } 
+        
+    public function activityLogs(): HasMany
+    {
+        return $this->HasMany(activityLogs::class); 
+        }   
 }
