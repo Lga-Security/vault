@@ -12,8 +12,8 @@ class Category extends Model
   protected $casts=[
         'is_default' => 'boolean',
     ];
-    public function passwordEntries(): HasMany
+    public function passwordEntrie(): HasMany
     {
-        return $this->HasMany(passwordEntries::class);
+        return $this->HasMany(PasswordEntrie::class);
         }
 }
