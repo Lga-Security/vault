@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('action');
             $table->text('description')->nullable();
             $table->string('ip_address');
-            $table->timestamps();
+            $table->timestamps('created_at');
         });
     }
 
