@@ -3,7 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 
-Route::get('/', function () {
+Route::get('/welcomeblade', function () {
     return view('welcome');
 });
 
