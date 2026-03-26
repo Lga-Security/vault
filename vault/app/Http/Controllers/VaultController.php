@@ -11,7 +11,7 @@ class VaultController extends Controller
      */
     public function index()
     {
-        $vaults = Auth::User->Vaults()->withCount('passwordEntries')->latest()->get();
+        $vault = Auth::User->Vaults()->withCount('passwordEntries')->latest()->get();
         return view('vault.index',compact('vaults'));
     }
 
