@@ -2,6 +2,8 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\VaultController;
+
 
 
 Route::get('/test', function () {
@@ -15,5 +17,5 @@ Route::middleware('guest')->group(function () {
 });
 
 Route::middleware('auth')->group(function () {
-
+    Route::resource('vaults', VaultController::class);
 });
