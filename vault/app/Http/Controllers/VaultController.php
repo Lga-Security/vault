@@ -11,19 +11,32 @@ class VaultController extends Controller
 {
     public function index()
     {
-
+        $vault = Auth::User->Vaults()->withCount('passwordEntries')->latest()->get();
+        return view('vault.index',compact('vaults'));
     }
 
+    /**
+     * Show the form for creating a new resource.
+     */
     public function create()
     {
-        
+        return view('vault.create');
     }
 
+    /**
+     * Store a newly created resource in storage.
+     */
     public function store(Request $request)
     {
-        
+        $request->validate([
+            'name' => ['required', 'string' , 'max:255'],
+            'description' => ['nullable' , 'string' ],
+            'icon' => ['nullable', 'max:50'],
+            'color' => ['nullable' , 'max:7'],
+        ]);
+        Auth::User()->vaults()->create($validatedData);
+        redirect()->route('vaults.index')->with('success', 'Vault created successfully!');
     }
-
     public function show(string $id)
     {
         $vault = Vault::findOrFail($id);
@@ -75,3 +88,12 @@ class VaultController extends Controller
     return redirect('/vaults')->with('success', 'Vault deleted successfully');
 }
 }
+    /**
+     * Display a listing of the resource.
+     */
+
+
+    /**
+     * Display the specified resource.
+     */
+
