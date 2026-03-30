@@ -3,22 +3,19 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use App\Models\PasswordEntry;
-use App\Models\User;
 
 class PasswordShare extends Model
 {
     protected $fillable = [
-    'password_entry_id',
-    'shared_by_user_id',
-    'shared_with_user_id',
-    'permission'
-
+        'password_entry_id',
+        'shared_by_user_id',
+        'shared_with_user_id',
+        'permission',
     ];
 
     public function passwordEntry()
     {
-        return $this->belongsTo(PasswordEntrie::class);
+        return $this->belongsTo(PasswordEntry::class);
     }
 
     public function sharedBy()

@@ -3,6 +3,7 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -25,7 +26,7 @@ class User extends Authenticatable
         'master_password_hash',
         'two_factor_enabled',
         'two_factor_secret',
-        'two_factor_recovery_codes'
+        'two_factor_recovery_codes',
     ];
 
     /**
@@ -52,28 +53,29 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
-    public function Vaults(): HasMany
+
+    public function vaults(): HasMany
     {
-        return $this->HasMany(Vaults::class);
-        }
-    
-    public function Category(): HasMany
+        return $this->hasMany(Vault::class);
+    }
+
+    public function categories(): HasMany
     {
-        return $this->HasMany(Category::class);
-        }
+        return $this->hasMany(Category::class);
+    }
 
     public function sharedPasswords(): HasMany
     {
-        return $this->HasMany(sharedPasswords::class);
-        }
-        
+        return $this->hasMany(PasswordShare::class, 'shared_by_user_id');
+    }
+
     public function receivedPasswords(): HasMany
     {
-        return $this->HaMany(receivedPasswords::class);
-        } 
-        
+        return $this->hasMany(PasswordShare::class, 'shared_with_user_id');
+    }
+
     public function activityLogs(): HasMany
     {
-        return $this->HasMany(activityLogs::class); 
-        }   
+        return $this->hasMany(ActivityLog::class);
+    }
 }

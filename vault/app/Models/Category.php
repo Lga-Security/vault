@@ -3,17 +3,23 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Category extends Model
 {
-  protected $fillable=[
-    'name' , 'icon' , 'user_id' , 'is_default'
-  ];
-  protected $casts=[
+    protected $fillable = [
+        'name',
+        'icon',
+        'user_id',
+        'is_default',
+    ];
+
+    protected $casts = [
         'is_default' => 'boolean',
     ];
-    public function passwordEntrie(): HasMany
+
+    public function passwordEntries(): HasMany
     {
-        return $this->HasMany(PasswordEntrie::class);
-        }
+        return $this->hasMany(PasswordEntry::class);
+    }
 }

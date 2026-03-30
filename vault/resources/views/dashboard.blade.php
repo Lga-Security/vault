@@ -11,6 +11,8 @@
     <p>Welcome, {{ Auth::user()->name }}!</p>
     <p>Email: {{ Auth::user()->email }}</p>
 
+    <p><a href="{{ route('vaults.index') }}">Vaults</a></p>
+
     <form method="POST" action="{{ route('logout') }}">
         @csrf
         <button type="submit">Logout</button>
