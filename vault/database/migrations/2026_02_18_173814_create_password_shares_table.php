@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id('id');
             $table->foreignId('password_entry_id')->constrained('password_entries');
             $table->foreignId('shared_by_user_id')->constrained('users');
-            $table->foreignId('share_with_user_id')->constrained('users');
+            $table->foreignId('shared_with_user_id')->constrained('users');
             $table->enum('access_level',['view','edit']);
             $table->timestamps();
         });

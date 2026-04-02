@@ -2,63 +2,121 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Vault;
+use App\Models\PasswordEntry;
+use App\Models\Category;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class PasswordEntryController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+
+    public function index(Vault $vault)
     {
-        //
+        $this->authorize('view', $vault);
+
+        return redirect()->route('vaults.show', $vault);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+
+    public function create(Vault $vault)
     {
-        //
+        $this->authorize('view', $vault);
+
+        $categories = Category::where('is_default', true)
+            ->orWhere('user_id', Auth::id())
+            ->orderBy('name')
+            ->get();
+
+        return view('entries.create', compact('vault', 'categories'));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
+
+    public function store(Request $request, Vault $vault)
     {
-        //
+        $this->authorize('view', $vault);
+
+        $validated = $request->validate([
+            'site_name'   => 'required|string|max:255',
+            'url'         => 'nullable|url|max:500',
+            'username'    => 'required|string',
+            'password'    => 'required|string',
+            'notes'       => 'nullable|string',
+            'category_id' => 'nullable|exists:categories,id',
+        ]);
+
+        $validated['username'] = encrypt($validated['username']);
+        $validated['password'] = encrypt($validated['password']);
+        $validated['notes']    = isset($validated['notes']) ? encrypt($validated['notes']) : null;
+
+        $vault->passwordEntries()->create($validated);
+
+        return redirect()->route('vaults.show', $vault)->with('success', 'Password entry added successfully!');
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
+
+    public function show(Vault $vault, PasswordEntry $entry)
     {
-        //
+        $this->authorize('view', $entry);
+
+        $decrypted = [
+            'username' => decrypt($entry->username),
+            'password' => decrypt($entry->password),
+            'notes'    => $entry->notes ? decrypt($entry->notes) : null,
+        ];
+
+        return view('entries.show', compact('vault', 'entry', 'decrypted'));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
+ 
+    public function edit(Vault $vault, PasswordEntry $entry)
     {
-        //
+        $this->authorize('update', $entry);
+
+        $decrypted = [
+            'username' => decrypt($entry->username),
+            'password' => decrypt($entry->password),
+            'notes'    => $entry->notes ? decrypt($entry->notes) : null,
+        ];
+
+        $categories = Category::where('is_default', true)
+            ->orWhere('user_id', Auth::id())
+            ->orderBy('name')
+            ->get();
+
+        return view('entries.edit', compact('vault', 'entry', 'decrypted', 'categories'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
+
+    public function update(Request $request, Vault $vault, PasswordEntry $entry)
     {
-        //
+        $this->authorize('update', $entry);
+
+        $validated = $request->validate([
+            'site_name'   => 'required|string|max:255',
+            'url'         => 'nullable|url|max:500',
+            'username'    => 'required|string',
+            'password'    => 'required|string',
+            'notes'       => 'nullable|string',
+            'category_id' => 'nullable|exists:categories,id',
+        ]);
+
+        $validated['username'] = encrypt($validated['username']);
+        $validated['password'] = encrypt($validated['password']);
+        $validated['notes']    = isset($validated['notes']) ? encrypt($validated['notes']) : null;
+
+        $entry->update($validated);
+
+        return redirect()->route('vaults.entries.show', [$vault, $entry])->with('success', 'Password entry updated successfully!');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
+
+    public function destroy(Vault $vault, PasswordEntry $entry)
     {
-        //
+        $this->authorize('delete', $entry);
+
+        $entry->delete();
+
+        return redirect()->route('vaults.show', $vault)->with('success', 'Password entry deleted successfully!');
     }
 }
