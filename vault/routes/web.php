@@ -1,12 +1,13 @@
 <?php
 
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\VaultController;
 use App\Http\Controllers\PasswordEntryController;
 
 Route::get('/', function () {
-    return auth()->check() ? redirect()->route('dashboard') : view('welcome');
+    return Auth::check() ? redirect()->route('dashboard') : view('welcome');
 });
 
 Route::middleware('guest')->group(function () {

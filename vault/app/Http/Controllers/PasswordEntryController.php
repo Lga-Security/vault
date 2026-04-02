@@ -2,69 +2,63 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Vault;
-use App\Models\PasswordEntry;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 
 class PasswordEntryController extends Controller
 {
-    private function authorizeVault(Vault $vault): void
+    /**
+     * Display a listing of the resource.
+     */
+    public function index()
     {
-        if ($vault->user_id !== Auth::id()) {
-            abort(403);
-        }
+        //
     }
 
-    public function store(Request $request, Vault $vault)
+    /**
+     * Show the form for creating a new resource.
+     */
+    public function create()
     {
-        $this->authorizeVault($vault);
-
-        $validated = $request->validate([
-            'site_name' => ['required', 'string', 'max:255'],
-            'username'  => ['required', 'string'],
-            'password'  => ['required', 'string'],
-            'category_id' => ['nullable', 'exists:categories,id'],
-            'notes'     => ['nullable', 'string'],
-        ]);
-
-        $vault->passwordEntries()->create($validated);
-
-        return redirect()->route('vaults.show', $vault)->with('success', 'Password entry added.');
+        //
     }
 
-    public function edit(Vault $vault, PasswordEntry $entry)
+    /**
+     * Store a newly created resource in storage.
+     */
+    public function store(Request $request)
     {
-        $this->authorizeVault($vault);
-
-        $categories = Auth::user()->categories()->orderBy('name')->get();
-
-        return view('entries.edit', compact('vault', 'entry', 'categories'));
+        //
     }
 
-    public function update(Request $request, Vault $vault, PasswordEntry $entry)
+    /**
+     * Display the specified resource.
+     */
+    public function show(string $id)
     {
-        $this->authorizeVault($vault);
-
-        $validated = $request->validate([
-            'site_name' => ['required', 'string', 'max:255'],
-            'username'  => ['required', 'string'],
-            'password'  => ['required', 'string'],
-            'category_id' => ['nullable', 'exists:categories,id'],
-            'notes'     => ['nullable', 'string'],
-        ]);
-
-        $entry->update($validated);
-
-        return redirect()->route('vaults.show', $vault)->with('success', 'Password entry updated.');
+        //
     }
 
-    public function destroy(Vault $vault, PasswordEntry $entry)
+    /**
+     * Show the form for editing the specified resource.
+     */
+    public function edit(string $id)
     {
-        $this->authorizeVault($vault);
+        //
+    }
 
-        $entry->delete();
+    /**
+     * Update the specified resource in storage.
+     */
+    public function update(Request $request, string $id)
+    {
+        //
+    }
 
-        return redirect()->route('vaults.show', $vault)->with('success', 'Password entry deleted.');
+    /**
+     * Remove the specified resource from storage.
+     */
+    public function destroy(string $id)
+    {
+        //
     }
 }

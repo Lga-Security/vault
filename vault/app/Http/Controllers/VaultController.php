@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use App\Models\Vault;
 use App\Models\PasswordEntry;
 use App\Models\PasswordShare;
@@ -12,9 +13,15 @@ use Illuminate\Support\Facades\Auth;
 
 class VaultController extends Controller
 {
+    private function user(): User
+    {
+        /** @var User */
+        return Auth::user();
+    }
+
     public function dashboard()
     {
-        $user = Auth::user();
+        $user = $this->user();
 
         $vaultCount = $user->vaults()->count();
         $entryCount = PasswordEntry::whereIn('vault_id', $user->vaults()->pluck('id'))->count();
@@ -34,7 +41,7 @@ class VaultController extends Controller
 
     public function index()
     {
-        $vaults = Auth::user()->vaults()->withCount('passwordEntries')->latest()->get();
+        $vaults = $this->user()->vaults()->withCount('passwordEntries')->latest()->get();
 
         return view('vaults.index', compact('vaults'));
     }
@@ -53,7 +60,7 @@ class VaultController extends Controller
             'color' => ['nullable', 'string', 'max:7'],
         ]);
 
-        Auth::user()->vaults()->create($validated);
+        $this->user()->vaults()->create($validated);
 
         return redirect()->route('vaults.index')->with('success', 'Vault created successfully!');
     }
@@ -65,7 +72,7 @@ class VaultController extends Controller
         }
 
         $entries = $vault->passwordEntries()->with('category')->latest()->get();
-        $categories = Auth::user()->categories()->orderBy('name')->get();
+        $categories = $this->user()->categories()->orderBy('name')->get();
 
         return view('vaults.show', compact('vault', 'entries', 'categories'));
     }
