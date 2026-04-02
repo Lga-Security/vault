@@ -3,11 +3,35 @@
 namespace App\Http\Controllers;
 
 use App\Models\Vault;
+use App\Models\PasswordEntry;
+use App\Models\PasswordShare;
+use App\Models\Category;
+use App\Models\ActivityLog;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class VaultController extends Controller
 {
+    public function dashboard()
+    {
+        $user = Auth::user();
+
+        $vaultCount = $user->vaults()->count();
+        $entryCount = PasswordEntry::whereIn('vault_id', $user->vaults()->pluck('id'))->count();
+        $categoryCount = $user->categories()->count();
+        $shareCount = PasswordShare::where('shared_by_user_id', $user->id)
+            ->orWhere('shared_with_user_id', $user->id)
+            ->count();
+
+        $vaults = $user->vaults()->withCount('passwordEntries')->latest()->take(5)->get();
+        $activities = ActivityLog::where('user_id', $user->id)->latest()->take(10)->get();
+
+        return view('dashboard', compact(
+            'vaultCount', 'entryCount', 'categoryCount', 'shareCount',
+            'vaults', 'activities'
+        ));
+    }
+
     public function index()
     {
         $vaults = Auth::user()->vaults()->withCount('passwordEntries')->latest()->get();
@@ -40,7 +64,10 @@ class VaultController extends Controller
             abort(403);
         }
 
-        return view('vaults.show', compact('vault'));
+        $entries = $vault->passwordEntries()->with('category')->latest()->get();
+        $categories = Auth::user()->categories()->orderBy('name')->get();
+
+        return view('vaults.show', compact('vault', 'entries', 'categories'));
     }
 
     public function edit(Vault $vault)

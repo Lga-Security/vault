@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('password_entries', function (Blueprint $table) {
             $table->id('id');
-            $table->foreignid('vault_id')->constrained('vaults');
-            $table->foreingid('category_id')->constrained('categories')->nullable();
+            $table->foreignId('vault_id')->constrained('vaults');
+            $table->foreignId('category_id')->constrained('categories')->nullable();
             $table->string('site_name');
             $table->text('username');
             $table->text('password');

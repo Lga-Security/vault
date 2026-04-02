@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('vaults', function (Blueprint $table) {
             $table->id('id');
-            $table->foreingid('user_id')->constrained('users');
+            $table->foreignId('user_id')->constrained('users');
             $table->string('name');
             $table->text('description')->nullable();
             $table->string('icon')->nullable();

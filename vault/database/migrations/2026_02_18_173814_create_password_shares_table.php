@@ -13,10 +13,10 @@ return new class extends Migration
     {
         Schema::create('password_shares', function (Blueprint $table) {
             $table->id('id');
-            $table->foreignid('password_entry_id')->constrained('password_entries');
-            $table->foreingid('shared_by_user_id')->constrained('users');
-            $table->foreignid('share_with_user_id')->constrained('users');
-            $tabme->enum('access_level',['view','edit']);
+            $table->foreignId('password_entry_id')->constrained('password_entries');
+            $table->foreignId('shared_by_user_id')->constrained('users');
+            $table->foreignId('share_with_user_id')->constrained('users');
+            $table->enum('access_level',['view','edit']);
             $table->timestamps();
         });
     }
