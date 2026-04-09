@@ -9,7 +9,6 @@ class PasswordEntryPolicy
 {
     public function view(User $user, PasswordEntry $entry): bool
     {
-        // The entry's vault must belong to this user
         return $entry->vault->user_id === $user->id;
     }
 
