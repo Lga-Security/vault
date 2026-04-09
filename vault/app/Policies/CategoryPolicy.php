@@ -43,7 +43,7 @@ class CategoryPolicy
      */
     public function delete(User $user, Category $category): bool
     {
-        return false;
+        return !$category->is_default && $category->user_id === $user->id;
     }
 
     /**
