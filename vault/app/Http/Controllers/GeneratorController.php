@@ -59,6 +59,6 @@ class GeneratorController extends Controller
 
     public function index()
     {
-        return view('generator');
+        return view('generator.index');
     }
 }
