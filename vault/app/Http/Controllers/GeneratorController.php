@@ -3,57 +3,52 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Http\JsonResponse;
 
 class GeneratorController extends Controller
 {
-    public function generate(Request $request)
+        // Character pools
+    private const UPPER = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    private const LOWER = 'abcdefghijklmnopqrstuvwxyz';
+    private const NUMBERS = '0123456789';
+    private const SYMBOLS = '!@#$%^&*()_+-=[]{}|;:,.<>?';
+    public function generate(Request $request): JsonResponse
     {
         $validated = $request->validate([
-            'length' => 'required|integer|min:8|max:64',
-            'upper' => 'required|boolean',
-            'lower' => 'required|boolean',
+            'length'  => 'required|integer|min:8|max:64',
+            'upper'   => 'required|boolean',
+            'lower'   => 'required|boolean',
             'numbers' => 'required|boolean',
             'symbols' => 'required|boolean',
         ]);
 
-        $upper = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-        $lower = 'abcdefghijklmnopqrstuvwxyz';
-        $numbers = '0123456789';
-        $symbols = '!@#$%^&*()-_=+[]{}|;:,.<>?';
-
+        // Build the character pool
         $pool = '';
+        if ($validated['upper'])   $pool .= self::UPPER;
+        if ($validated['lower'])   $pool .= self::LOWER;
+        if ($validated['numbers']) $pool .= self::NUMBERS;
+        if ($validated['symbols']) $pool .= self::SYMBOLS;
 
-        if ($validated['upper']){
-            $pool .= $upper;
-        }
-        if ($validated['lower']){
-            $pool .= $lower;
-        }
-        if ($validated['numbers']){
-            $pool .= $numbers;
-        }
-        if ($validated['symbols']){
-            $pool .= $symbols;
-        }
-        if (empty($pool)){
+        // Edge case: no character types selected
+        if ($pool === '') {
             return response()->json([
-                'error' => 'Un caractère doit être sélectionner'
+                'error' => 'Please select at least one character type.',
             ], 422);
         }
 
+        // Generate the password using cryptographically secure randomness
         $password = '';
-        $poolLenght = strlen($pool);
-
-        for ($i = 0; $i < $validated['lenght']; $i++){
-            $index = random_int(0, $poolLenght -1);
-            $password .= $pool[$index];
+        $poolLength = strlen($pool);
+        for ($i = 0; $i < $validated['length']; $i++) {
+            $password .= $pool[random_int(0, $poolLength - 1)];
         }
 
-        $strenght = $this->calculateStrenght($password);
+        // Calculate strength
+        $strength = $this->calculateStrength($password);
 
         return response()->json([
             'password' => $password,
-            'strenght' => $strenght
+            'strength' => $strength,
         ]);
     }
 
@@ -62,7 +57,7 @@ class GeneratorController extends Controller
         return view('generator.index');
     }
 
-    public function calculateStrength(string $password):array{
+    private function calculateStrength(string $password):array{
 
         $score = 0;
 
