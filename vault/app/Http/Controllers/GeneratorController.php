@@ -61,8 +61,8 @@ class GeneratorController extends Controller
     {
         return view('generator.index');
     }
-}
-    private function calculateStrength(string $password):array{
+
+    public function calculateStrength(string $password):array{
 
         $score = 0;
 
@@ -115,3 +115,4 @@ class GeneratorController extends Controller
 
 }
 
+}
