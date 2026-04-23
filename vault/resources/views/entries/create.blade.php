@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Edit Entry — ' . $entry->site_name)
+@section('title', 'Add Entry — ' . $vault->name)
 
 @section('content')
 <div style="max-width: 640px;" class="mx-auto">
@@ -9,11 +9,11 @@
         <ol class="breadcrumb">
             <li class="breadcrumb-item"><a href="{{ route('vaults.index') }}">Vaults</a></li>
             <li class="breadcrumb-item"><a href="{{ route('vaults.show', $vault) }}">{{ $vault->name }}</a></li>
-            <li class="breadcrumb-item active">Edit Entry</li>
+            <li class="breadcrumb-item active">Add Entry</li>
         </ol>
     </nav>
 
-    <h1 class="h3 mb-4">Edit Password Entry</h1>
+    <h1 class="h3 mb-4">Add Password Entry</h1>
 
     @if ($errors->any())
         <div class="alert alert-danger">
@@ -25,9 +25,8 @@
         </div>
     @endif
 
-    <form method="POST" action="{{ route('vaults.entries.update', [$vault, $entry]) }}" class="card shadow-sm">
+    <form method="POST" action="{{ route('vaults.entries.store', $vault) }}" class="card shadow-sm">
         @csrf
-        @method('PUT')
         <div class="card-body">
 
             <div class="row g-3">
@@ -36,13 +35,14 @@
                         Site / Service Name <span class="text-danger">*</span>
                     </label>
                     <input type="text" name="site_name" id="site_name" class="form-control"
-                           value="{{ old('site_name', $entry->site_name) }}" required maxlength="255" autofocus>
+                           value="{{ old('site_name') }}" required maxlength="255" autofocus
+                           placeholder="e.g. GitHub">
                 </div>
 
                 <div class="col-md-6">
                     <label for="url" class="form-label small fw-semibold">URL</label>
                     <input type="url" name="url" id="url" class="form-control"
-                           value="{{ old('url', $entry->url) }}" maxlength="500" placeholder="https://example.com">
+                           value="{{ old('url') }}" maxlength="500" placeholder="https://example.com">
                 </div>
 
                 <div class="col-md-6">
@@ -50,7 +50,7 @@
                         Username / Email <span class="text-danger">*</span>
                     </label>
                     <input type="text" name="username" id="username" class="form-control"
-                           value="{{ old('username', $decrypted['username']) }}" required>
+                           value="{{ old('username') }}" required placeholder="you@example.com">
                 </div>
 
                 <div class="col-md-6">
@@ -59,10 +59,15 @@
                     </label>
                     <div class="input-group">
                         <input type="password" name="password" id="password" class="form-control font-monospace"
-                               value="{{ old('password', $decrypted['password']) }}" required>
+                               value="{{ old('password') }}" required placeholder="••••••••">
                         <button type="button" class="btn btn-outline-secondary" id="toggle-password" title="Show / Hide">
                             <i class="bi bi-eye" id="toggle-icon"></i>
                         </button>
+                    </div>
+                    <div class="mt-1">
+                        <a href="{{ route('generator.index') }}" target="_blank" class="small text-muted">
+                            <i class="bi bi-dice-3 me-1"></i>Need a strong password? Use the generator
+                        </a>
                     </div>
                 </div>
 
@@ -72,7 +77,7 @@
                         <option value="">— None —</option>
                         @foreach ($categories as $category)
                             <option value="{{ $category->id }}"
-                                {{ old('category_id', $entry->category_id) == $category->id ? 'selected' : '' }}>
+                                {{ old('category_id') == $category->id ? 'selected' : '' }}>
                                 {{ $category->name }}
                             </option>
                         @endforeach
@@ -82,17 +87,15 @@
                 <div class="col-12">
                     <label for="notes" class="form-label small fw-semibold">Notes</label>
                     <textarea name="notes" id="notes" class="form-control" rows="3"
-                              placeholder="Optional notes...">{{ old('notes', $decrypted['notes']) }}</textarea>
+                              placeholder="Optional notes...">{{ old('notes') }}</textarea>
                 </div>
             </div>
 
         </div>
         <div class="card-footer bg-white d-flex gap-2 justify-content-end">
-            <a href="{{ route('vaults.entries.show', [$vault, $entry]) }}" class="btn btn-outline-secondary">
-                Cancel
-            </a>
+            <a href="{{ route('vaults.show', $vault) }}" class="btn btn-outline-secondary">Cancel</a>
             <button type="submit" class="btn btn-primary">
-                <i class="bi bi-check-lg me-1"></i>Save Changes
+                <i class="bi bi-plus-lg me-1"></i>Save Entry
             </button>
         </div>
     </form>

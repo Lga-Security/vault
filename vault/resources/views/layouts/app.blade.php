@@ -41,6 +41,16 @@
                             <i class="bi bi-safe me-1"></i>Vaults
                         </a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link {{ request()->routeIs('categories.*') ? 'active' : '' }}" href="{{ route('categories.index') }}">
+                            <i class="bi bi-tags me-1"></i>Categories
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {{ request()->routeIs('generator.*') ? 'active' : '' }}" href="{{ route('generator.index') }}">
+                            <i class="bi bi-dice-3 me-1"></i>Generator
+                        </a>
+                    </li>
                 </ul>
                 <ul class="navbar-nav">
                     <li class="nav-item dropdown">
