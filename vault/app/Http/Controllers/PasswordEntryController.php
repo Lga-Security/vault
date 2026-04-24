@@ -57,16 +57,18 @@ class PasswordEntryController extends Controller
 
     public function show(Vault $vault, PasswordEntry $entry)
     {
-        $this->authorize('view', $entry);
+        $this->authorize('view', $vault);
 
-        $decrypted = [
-            'username' => decrypt($entry->username),
-            'password' => decrypt($entry->password),
-            'notes'    => $entry->notes ? decrypt($entry->notes) : null,
-        ];
+        if ($entry->vault_id !== $vault->id) {
+            abort(403);
+        }
 
-        return view('entries.show', compact('vault', 'entry', 'decrypted'));
-    }
+        $entry->username = decrypt($entry->username);
+        $entry->password = decrypt($entry->password);
+        $entry->notes = $entry->notes ? decrypt($entry->notes) : null;
+
+        return view('entries.show', compact('vault', 'entry'));
+    }   
 
  
     public function edit(Vault $vault, PasswordEntry $entry)
