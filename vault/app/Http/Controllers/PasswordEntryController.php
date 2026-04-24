@@ -59,9 +59,6 @@ class PasswordEntryController extends Controller
     {
         $this->authorize('view', $vault);
 
-        if ($entry->vault_id !== $vault->id) {
-            abort(403);
-        }
 
         $entry->username = decrypt($entry->username);
         $entry->password = decrypt($entry->password);
