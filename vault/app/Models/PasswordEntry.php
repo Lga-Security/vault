@@ -10,6 +10,7 @@ class PasswordEntry extends Model
         'vault_id',
         'category_id',
         'site_name',
+        'url',
         'username',
         'password',
         'notes',

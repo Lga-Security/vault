@@ -86,12 +86,12 @@ class CategoryController extends Controller
 
     
 
-    public function destroy(string $id)
+    public function destroy(Category $category)
     {
         $this->authorize('delete', $category);
 
         $category->delete();
 
-        return redirect()->route('category.index')->with('Success', 'Category deleted successfully!');
+        return redirect()->route('categories.index')->with('success', 'Category deleted successfully!');
     }
 }

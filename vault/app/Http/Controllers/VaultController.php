@@ -11,6 +11,7 @@ use App\Models\ActivityLog;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
+
 class VaultController extends Controller
 {
     private function user(): User
@@ -65,13 +66,23 @@ class VaultController extends Controller
         return redirect()->route('vaults.index')->with('success', 'Vault created successfully!');
     }
 
-    public function show(Vault $vault)
+    public function show(Request $request, Vault $vault)
     {
-        if ($vault->user_id !== Auth::id()) {
-            abort(403);
-        }
+        $this->authorize('view', $vault);
 
-        $entries = $vault->passwordEntries()->with('category')->latest()->get();
+        $query = $vault->passwordEntries()->with('category')->latest();
+
+        if ($request->filled('q')) {
+            $search = $request->q;
+
+            $query->where(function ($q) use ($search) {
+                $q->where('site_name', 'like', "%{$search}%")
+                  ->orWhere('url', 'like', "%{$search}%");
+        }); 
+    }
+
+        $entries = $query->get(); 
+
         $categories = $this->user()->categories()->orderBy('name')->get();
 
         return view('vaults.show', compact('vault', 'entries', 'categories'));
@@ -79,18 +90,15 @@ class VaultController extends Controller
 
     public function edit(Vault $vault)
     {
-        if ($vault->user_id !== Auth::id()) {
-            abort(403);
-        }
+         $this->authorize('update', $vault);
 
         return view('vaults.edit', compact('vault'));
+
     }
 
     public function update(Request $request, Vault $vault)
     {
-        if ($vault->user_id !== Auth::id()) {
-            abort(403);
-        }
+        $this->authorize('update', $vault);
 
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:255'],
@@ -101,17 +109,17 @@ class VaultController extends Controller
 
         $vault->update($validated);
 
-        return redirect()->route('vaults.index')->with('success', 'Vault updated successfully');
+        return redirect()->route('vaults.index')
+            ->with('success', 'Vault updated successfully');
     }
 
     public function destroy(Vault $vault)
     {
-        if ($vault->user_id !== Auth::id()) {
-            abort(403);
-        }
+        $this->authorize('delete', $vault);
 
         $vault->delete();
 
-        return redirect()->route('vaults.index')->with('success', 'Vault deleted successfully');
+        return redirect()->route('vaults.index')
+            ->with('success', 'Vault deleted successfully');
     }
 }
