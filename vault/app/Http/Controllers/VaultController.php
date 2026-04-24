@@ -83,8 +83,11 @@ class VaultController extends Controller
 
         $entries = $query->get(); 
 
-        $categories = $this->user()->categories()->orderBy('name')->get();
-
+        $entries = $vault->passwordEntries()->with('category')->latest()->get();
+        $categories = Category::where('is_default', true)
+                ->orwhere('user_id', auth::id())
+                ->orderby('name')
+                ->get();
         return view('vaults.show', compact('vault', 'entries', 'categories'));
     }
 

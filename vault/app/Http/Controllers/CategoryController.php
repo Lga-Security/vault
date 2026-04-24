@@ -69,13 +69,13 @@ class CategoryController extends Controller
 
     
     
-    public function update(Request $request, string $id)
+    public function update(Request $request, Category $category)
     {
         $this->authorize('update', $category);
 
         $validated = $request->validate([
-        'name' => ['required' | 'string' | 'max:255'],
-        'icon' => ['nullable' | 'string' | 'max:50'],
+        'name' => ['required | string | max:255'],
+        'icon' => ['nullable | string | max:50'],
         ]);
 
         $category->update($validated);

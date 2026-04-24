@@ -74,7 +74,7 @@ class GeneratorController extends Controller
                 'level' => 'Weak',
                 'label' => 'Weak',
                 'color' => '#dc3545',
-                'filledBars' => '1',
+                'filledBars' => 1,
             ];
         }
         
@@ -83,7 +83,7 @@ class GeneratorController extends Controller
                 'level' => 'Fair',
                 'label' => 'Fair',
                 'color' => '#fd7e14',
-                'filledBars' => '2',
+                'filledBars' => 2,
             ];
         }   
 
@@ -93,7 +93,7 @@ class GeneratorController extends Controller
                 'level' => 'Good',
                 'label' => 'Good',
                 'color' => '#ffc107',
-                'filledBars' => '3',
+                'filledBars' => 3,
             ];
         }    
         
@@ -102,7 +102,7 @@ class GeneratorController extends Controller
                 'level' => 'Strong',
                 'label' => 'Strong',
                 'color' => '#198754',
-                'filledBars' => '4'
+                'filledBars' => 4,
             ];
         }              
                        
