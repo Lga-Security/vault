@@ -52,6 +52,9 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'two_factor_enabled'         => 'boolean',
+            'two_factor_recovery_codes'  => 'array',
+            'failed_login_attempts'      => 'integer',
         ];
     }
 
