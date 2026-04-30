@@ -7,6 +7,7 @@ use App\Http\Controllers\VaultController;
 use App\Http\Controllers\PasswordEntryController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\GeneratorController;
+use App\Http\Controllers\PasswordShareController;
 
 Route::get('/', function () {
     return Auth::check() ? redirect()->route('dashboard') : view('welcome');
@@ -22,6 +23,10 @@ Route::middleware('guest')->group(function () {
 Route::middleware('auth')->group(function () {
     Route::get('/dashboard', [VaultController::class, 'dashboard'])->name('dashboard');
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+    Route::get('/shared', [PasswordShareController::class, 'index'])->name('shares.index');
+    Route::post('/entries/{entry}/share', [PasswordShareController::class, 'store'])->name('shares.store');
+    Route::put('/shares/{share}', [PasswordShareController::class, 'update'])->name('shares.update');
+    Route::delete('/shares/{share}', [PasswordShareController::class, 'destroy'])->name('shares.destroy');
 
     // Vaults
     Route::resource('vaults', VaultController::class);
@@ -44,3 +49,4 @@ Route::middleware('auth')->group(function () {
     Route::get('/generator', [GeneratorController::class, 'index'])->name('generator.index');
     Route::post('/generator', [GeneratorController::class, 'generate'])->name('generator.generate');
 });
+
